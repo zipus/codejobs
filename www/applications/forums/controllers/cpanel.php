@@ -152,26 +152,24 @@ class CPanel_Controller extends ZP_Controller {
 		if(!$this->isAdmin) {
 			$this->login();
 		}
-		
-		if((int) $ID === 0) { 
-			redirect($this->application ."/cpanel/results");
-		}
+                
+                $this->helper(array("forms", "alerts", "debugging"));
 
 		$this->title("Edit");
 		
 		$this->CSS("forms", "cpanel");
-		
-		$Model = ucfirst($this->application) ."_Model";
-		
-		$this->$Model = $this->model($Model);
-		
+                
 		if(POST("edit")) {
-			$this->vars["alert"] = $this->$Model->cpanel("edit");
+			$this->vars["alert"] = $this->{"$this->Model"}->cpanel("edit");
 		} elseif(POST("cancel")) {
 			redirect("cpanel");
-		} 
+		}
+                
+                if((int) $ID === 0) { 
+			redirect($this->application ."/cpanel/results");
+		}
 		
-		$data = $this->$Model->getByID($ID);
+		$data = $this->{"$this->Model"}->getByID($ID);
 		
 		if($data) {			
 			$this->vars["data"]	= $data;

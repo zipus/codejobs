@@ -50,9 +50,8 @@ class Forums_Model extends ZP_Model {
 	}
 	
 	private function editOrSave() {
-            $validations = array(
+                $validations = array(
 			"exists"  => array(
-				"Slug" 	   => slug(POST("title", "clean")), 
 				"Year"	   => date("Y"),
 				"Month"	   => date("m"),
 				"Day"	   => date("d"),
@@ -65,7 +64,7 @@ class Forums_Model extends ZP_Model {
                 $this->URL        = path("blog/". date("Y")) ."/". date("m") ."/". date("d") ."/". slug(POST("title", "clean"));
 				
 		$data = array(
-			"ID_Forum"     => POST("ID_Forum"),
+			"ID_Forum"     => POST("ID"),
                         "Title"        => POST("title", "clean"),
 			"Slug"         => slug(POST("title", "clean")),
 			"Description"  => POST("description", "clean"),
@@ -81,7 +80,7 @@ class Forums_Model extends ZP_Model {
 	}
 	
 	private function save() {
-            if($this->getIDByForum($this->slug)){
+            if($this->getIDByForum($this->data["Slug"])){
                 return getAlert(__(_("This forum already exists")), "error", $this->URL);
             } 
             $this->Db->insert($this->table, $this->data);
@@ -89,15 +88,16 @@ class Forums_Model extends ZP_Model {
 	}
 	
 	private function edit() {
-		$data = $this->Db->call("updateForum('$this->ID', '$this->title', '$this->nice', '$this->description', '$this->situation')");
+                $Forum = $this->getIDByForum($this->data["Slug"]);
+                if($Forum){
+                    if($Forum[0]["ID_Forum"] != $this->data["ID_Forum"]){
+                        return getAlert(__(_("This forum already exists")), "error", $this->URL);
+                    }
+                }
+                
+                $this->Db->update($this->table, $this->data, POST("ID"));	
 		
-		if(isset($data[0]["FALSE"])) {
-			return getAlert("An ocurred error");
-		} elseif(isset($data[0]["Forum_Exists"])) {
-			return getAlert("This forum already exists");
-		}
-		
-		return getAlert("The forum has been edited correctly", "success");
+		return getAlert(__(_("The forum has been edited correctly")), "success", $this->URL);
 	}
 	
 	public function getByID($ID) {		
