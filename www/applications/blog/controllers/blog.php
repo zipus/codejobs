@@ -187,7 +187,7 @@ class Blog_Controller extends ZP_Controller {
 
 		$data = $this->Cache->data("last-". $this->language ."-$limit", "blog", $this->Blog_Model, "getPosts", array($limit));
 
-		$this->helper("time");
+		$this->helper(array("html", "time"));
 
 		if($data) {						
 			$vars["posts"]      = $data;
