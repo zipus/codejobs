@@ -5,7 +5,7 @@
 if(!defined("_access")) {
 	die("Error: You don't have permission to access here...");
 }
-
+ 
 class CPanel_Controller extends ZP_Controller {
 	
 	private $vars = array();

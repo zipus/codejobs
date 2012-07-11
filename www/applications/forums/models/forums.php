@@ -5,7 +5,7 @@
 if(!defined("_access")) {
 	die("Error: You don't have permission to access here...");
 }
-
+ 
 class Forums_Model extends ZP_Model {
 	
 	public function __construct() {
