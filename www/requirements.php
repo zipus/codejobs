@@ -9,6 +9,8 @@ if(!defined("_access")) {
 ob_start(); 
 session_start();
 
+defined('__DIR__') or define('__DIR__', dirname(__FILE__));
+
 define("_dir", __DIR__);
 
 if(!version_compare(PHP_VERSION, "5.1.0", ">=")) {
