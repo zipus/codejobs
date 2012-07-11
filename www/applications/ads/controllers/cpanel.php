@@ -158,7 +158,7 @@ class CPanel_Controller extends ZP_Controller {
 		if(!$this->isAdmin) {
 			$this->login();
 		}
-		
+		$this->helper("forms");
 		$this->title("Add");
 		
 		$this->CSS("forms", "cpanel");
