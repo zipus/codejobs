@@ -122,6 +122,7 @@ class Blog_Controller extends ZP_Controller {
 		$this->CSS("posts", $this->application);
 		$this->CSS("comments", $this->application);
 		$this->CSS("forms");
+		$this->helper(array("forms","html"));
 
 		$alert = (POST("publish")) ? $this->Comments_Model->addComment() : FALSE;
 		

@@ -161,6 +161,7 @@ class CPanel_Controller extends ZP_Controller {
 		$this->helper("forms");
 		$this->title("Add");
 		
+		
 		$this->CSS("forms", "cpanel");
 		
 		$this->vars["alert"] = FALSE;
