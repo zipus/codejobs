@@ -26,6 +26,10 @@ class CPanel_Controller extends ZP_Controller {
 		$this->Templates = $this->core("Templates");
 		
 		$this->Templates->theme("cpanel");
+                
+                $this->Model = ucfirst($this->application) ."_Model";
+		
+		$this->{"$this->Model"} = $this->model($this->Model);	
 	}
 	
 	public function index() {
@@ -124,26 +128,24 @@ class CPanel_Controller extends ZP_Controller {
 		if(!$this->isAdmin) {
 			$this->login();
 		}
+                
+                $this->helper(array("forms", "alerts"));
 		
 		$this->title("Add");	
 		
 		$this->CSS("forms", "cpanel");
 		
-		$this->vars["alert"] = FALSE;
-		
-		$Model = ucfirst($this->application) ."_Model";
-		
-		$this->$Model = $this->model($Model);
-		
 		if(POST("save")) {
-			$this->vars["alert"] = $this->$Model->cpanel("save");
+			$save = $this->{"$this->Model"}->cpanel("save");
+                        
+			$this->vars["alert"] = $save;
 		} elseif(POST("cancel")) {
 			redirect("cpanel");
 		}
 		
 		$this->vars["view"] = $this->view("add", TRUE, $this->application);
 		
-		$this->template("content", $this->vars);
+		$this->render("content", $this->vars);
 	}
 		
 	public function edit($ID = 0) {
@@ -175,7 +177,7 @@ class CPanel_Controller extends ZP_Controller {
 			$this->vars["data"]	= $data;
 			$this->vars["view"] = $this->view("add", TRUE, $this->application);
 			
-			$this->template("content", $this->vars);
+			$this->render("content", $this->vars);
 		} else {
 			redirect($this->application ."/cpanel/results");
 		}
@@ -194,7 +196,7 @@ class CPanel_Controller extends ZP_Controller {
 			$this->vars["view"] = $this->view("login", TRUE, "cpanel");
 		}
 		
-		$this->template("include", $this->vars);
+		$this->render("include", $this->vars);
 		$this->render("header", "footer");
 		
 		exit;
@@ -204,27 +206,27 @@ class CPanel_Controller extends ZP_Controller {
 		if(!$this->isAdmin) {
 			$this->login();
 		}
+                
+                $this->check();
 		
 		$this->title("Manage ". $this->application);
+                
 		$this->CSS("results", "cpanel");
 		$this->CSS("pagination");
+                
 		$this->js("checkbox");	
 		
 		$trash = (segment(3, isLang()) === "trash") ? TRUE : FALSE;
 		
-		$total 		= $this->CPanel_Model->total($trash);
-		$thead 		= $this->CPanel_Model->thead("checkbox, ". getFields($this->application) .", Action", FALSE);
-		$pagination 	= $this->CPanel_Model->getPagination($trash);
-		$tFoot 		= getTFoot($trash);
-		
-		$this->vars["message"]    = (!$tFoot) ? "Error" : NULL;
-		$this->vars["pagination"] = $pagination;
+		$this->vars["total"] 	  = $this->CPanel_Model->total($trash);
+		$this->vars["tFoot"] 	  = $this->CPanel_Model->records($trash);
+		$this->vars["message"]    = (!$this->vars["tFoot"]) ? "Error" : NULL;
+		$this->vars["pagination"] = $this->CPanel_Model->getPagination($trash);
 		$this->vars["trash"]  	  = $trash;	
-		$this->vars["search"] 	  = getSearch(); 
-		$this->vars["table"]      = getTable(__(_("Manage ". ucfirst($this->application))), $thead, $tFoot, $total);					
-		$this->vars["view"]       = $this->view("results", TRUE, "cpanel");
+		$this->vars["search"] 	  = getSearch(); 			
+		$this->vars["view"]       = $this->view("results", TRUE, $this->application);
 		
-		$this->template("content", $this->vars);
+		$this->render("content", $this->vars);
 	}
 	
 }

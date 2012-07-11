@@ -5,3 +5,5 @@
 www/config/config.php
 www/config/database.php
 www/config/routes.php
+/nbproject/private/
+/nbproject/

@@ -9,9 +9,15 @@ if(!defined("_access")) {
 class Forums_Model extends ZP_Model {
 	
 	public function __construct() {
-		$this->Db          = $this->db();		
-		$this->table       = "forums";
-		$this->language    = whichLanguage(); 
+		$this->Db       = $this->db();	
+                
+                $this->language = whichLanguage();
+		$this->table    = "forums";
+		$this->fields   = "ID_Forum, Title, Slug, Description, Topics, Replies, Last_Reply, Last_Date, Language, Situation";
+
+		$this->Data = $this->core("Data");
+
+		$this->Data->table($this->table);
 	}
 	
 	public function cpanel($action, $limit = NULL, $order = "Language DESC", $search = NULL, $field = NULL, $trash = FALSE) {
@@ -35,50 +41,51 @@ class Forums_Model extends ZP_Model {
 	}
 	
 	private function all($trash, $order, $limit) {
-		if(!$trash) {
-			if(SESSION("ZanUserPrivilege") === _super) {
-				$data = $this->Db->findBySQL("Situation != 'Deleted'", $this->table, NULL, $order, $limit);
-			} else {
-				$data = $this->Db->findBySQL("ID_User = '". SESSION("ZanUserID") ."' AND Situation != 'Deleted'", $this->table, NULL, $order, $limit);
-			}	
-		} else {
-			if(SESSION("ZanUserPrivilege") === _super) {
-				$data = $this->Db->findBy("Situation", "Deleted", $this->table, NULL, $order, $limit);
-			} else {
-				$data = $this->Db->findBySQL("ID_User = '". SESSION("ZanUserID") ."' AND Situation = 'Deleted'", $this->table, NULL, $order, $limit);
-			}
-		}
-		
+                if($trash) {
+                   $data = $this->Db->findBy("Situation", "Deleted", $this->table, $this->fields, NULL, $order, $limit);
+                } else {
+                    $data = $this->Db->findBySQL("Situation != 'Deleted'", $this->table, $this->fields, NULL, $order, $limit);
+                }
 		return $data;	
 	}
 	
 	private function editOrSave() {
-		if(!POST("title")) {
-			return getAlert("You need to write a title");
-		} elseif(strlen(POST("title")) < 3) {
-			return getAlert("You need to write a longer title");
-		} elseif(!POST("description")) {
-			return getAlert("You need to write a description");
-		} elseif(strlen(POST("description")) < 5) {
-			return getAlert("You need to write a longer description");
-		}
+            $validations = array(
+			"exists"  => array(
+				"Slug" 	   => slug(POST("title", "clean")), 
+				"Year"	   => date("Y"),
+				"Month"	   => date("m"),
+				"Day"	   => date("d"),
+				"Language" => POST("language")
+			),
+			"title"   => "required",
+			"description" => "required"
+		);
+            
+                $this->URL        = path("blog/". date("Y")) ."/". date("m") ."/". date("d") ."/". slug(POST("title", "clean"));
+				
+		$data = array(
+			"ID_Forum"     => POST("ID_Forum"),
+                        "Title"        => POST("title", "clean"),
+			"Slug"         => slug(POST("title", "clean")),
+			"Description"  => POST("description", "clean"),
+			"Language"     => POST("language"),
+                        "Situation"    => POST("situation")
+		);
 	
-		$this->title       = POST("title", "decode", "escape");
-		$this->nice        = nice(POST("title", FALSE));
-		$this->ID 	       = POST("ID_Forum");
-		$this->description = POST("description", "decode", "escape");
-		$this->language    = POST("language");
-		$this->situation   = POST("situation");
+		$this->data = $this->Data->proccess($data, $validations);
+
+		if(isset($this->data["error"])) {
+			return $this->data["error"];
+		}
 	}
 	
 	private function save() {
-		$data = $this->Db->call("setForum('$this->title', '$this->nice', '$this->description', '$this->language', '$this->situation')");
-		
-		if(isset($data[0]["FALSE"])) {
-			return getAlert("This forum already exists");
-		}
-		
-		return getAlert("The forum has been saved correctly", "success");
+            if($this->getIDByForum($this->slug)){
+                return getAlert(__(_("This forum already exists")), "error", $this->URL);
+            } 
+            $this->Db->insert($this->table, $this->data);
+            return getAlert(__(_("The forum has been saved correctly")), "success", $this->URL);
 	}
 	
 	private function edit() {

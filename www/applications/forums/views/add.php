@@ -34,7 +34,7 @@
 								"p" 	=> TRUE, 
 								"value" => $description));
 			
-			echo formField(NULL, __(_("Languages")) ."<br />". getLanguageRadios($language)); 	
+			echo formField(NULL, __(_("Languages")) ."<br />". getLanguagesInput($language)); 	
 			
 			$options = array(
 				0 => array(
