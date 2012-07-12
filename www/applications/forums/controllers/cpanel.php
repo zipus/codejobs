@@ -152,8 +152,8 @@ class CPanel_Controller extends ZP_Controller {
 		if(!$this->isAdmin) {
 			$this->login();
 		}
-                
-                $this->helper(array("forms", "alerts", "debugging"));
+
+		$this->helper(array("forms", "alerts"));
 
 		$this->title("Edit");
 		
@@ -164,8 +164,8 @@ class CPanel_Controller extends ZP_Controller {
 		} elseif(POST("cancel")) {
 			redirect("cpanel");
 		}
-                
-                if((int) $ID === 0) { 
+
+		if((int) $ID === 0) { 
 			redirect($this->application ."/cpanel/results");
 		}
 		
@@ -204,8 +204,8 @@ class CPanel_Controller extends ZP_Controller {
 		if(!$this->isAdmin) {
 			$this->login();
 		}
-                
-                $this->check();
+
+		$this->check();
 		
 		$this->title("Manage ". $this->application);
                 
