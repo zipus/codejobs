@@ -139,7 +139,6 @@ class CPanel_Controller extends ZP_Controller {
 		$this->js("www/lib/scripts/js/prettyphoto/js/jquery.prettyphoto.js");
 		$this->js("actions", "ads");
 		$this->js("banner-lightbox", "ads");	
-		$this->js("checkbox");			
 		
 		$trash = (segment(3, isLang()) === "trash") ? TRUE : FALSE;
 				

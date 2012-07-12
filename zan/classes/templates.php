@@ -235,13 +235,13 @@ class ZP_Templates extends ZP_Load {
 		} elseif($js === "lesscss") {
 			$js = '<script type="text/javascript" src="'. path("vendors/js/less/less.js", "zan") .'"></script>';
 		} elseif(file_exists($js)) {
-			$js = '<script type="text/javascript" src="'. $js .'"></script>';
+			$js = '<script type="text/javascript" src="'. path($js, TRUE) .'"></script>';
 		} elseif(file_exists(path($js, "zan"))) {
 			$js = '<script type="text/javascript" src="'. path($js, "zan") .'"></script>';
 		} elseif(file_exists("www/$application/views/js/$js")) {
-			$js = '<script type="text/javascript" src="www/'. $application .'/views/js/'. $js .'"></script>';
+			$js = '<script type="text/javascript" src="'. path("www/$application/views/js/$js") .'"></script>';
 		} elseif(file_exists("www/$application/views/js/$js.js")) {
-			$js = '<script type="text/javascript" src="www/'. $application .'/views/js/'. $js .'.js"></script>';
+			$js = '<script type="text/javascript" src="'. path("www/$application/views/js/$js.js") .'"></script>';
 		} else {
 			return FALSE;
 		}
