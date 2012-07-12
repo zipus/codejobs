@@ -76,7 +76,7 @@ class Forums_Controller extends ZP_Controller {
 			$vars["URL"]	= path($this->application);
 			$vars["view"]   = $this->view("forums", $this->application, TRUE);
 			
-			$this->template("content", $vars);			
+			$this->render("content", $vars);			
 		} else {
 			redirect(_webBase);
 		}	
@@ -102,7 +102,7 @@ class Forums_Controller extends ZP_Controller {
 			$vars["URL"]	= path($this->application . _sh . $nice);
 			$vars["view"]   = $this->view("forum", $this->application, TRUE);
 			
-			$this->template("content", $vars);
+			$this->render("content", $vars);
 		} else {
 			redirect("forums");
 		}
@@ -168,7 +168,7 @@ class Forums_Controller extends ZP_Controller {
 
 			$vars["view"]  = $this->view("topic", $this->application, TRUE);
 				
-			$this->template("content", $vars);
+			$this->render("content", $vars);
 		} else {
 			redirect("forums" . _sh . segment(2));
 		}
@@ -217,7 +217,7 @@ class Forums_Controller extends ZP_Controller {
 
 					$vars["view"] = $this->view("newtopic", $this->application, TRUE);
 					
-					$this->template("content", $vars);
+					$this->render("content", $vars);
 				}
 			} else {
 				if(!POST("title")) {
@@ -256,7 +256,7 @@ class Forums_Controller extends ZP_Controller {
 
 					$vars["view"] = $this->view("newtopic", $this->application, TRUE);
 					
-					$this->template("content", $vars);
+					$this->render("content", $vars);
 				} else {
 					if($action === "save") {
 						$success = $this->Forums_Model->setTopic();
@@ -277,7 +277,7 @@ class Forums_Controller extends ZP_Controller {
 					$vars["href"]    = path($this->application . _sh . $nice);
 					$vars["view"]    = $this->view("newtopic", $this->application, TRUE);
 					
-					$this->template("content", $vars);
+					$this->render("content", $vars);
 				}
 			}
 		} else {
@@ -337,7 +337,7 @@ class Forums_Controller extends ZP_Controller {
 					$vars["action"] = $action;					
 					$vars["view"]   = $this->view("reply", $this->application, TRUE);
 					
-					$this->template("content", $vars);
+					$this->render("content", $vars);
 				}
 			} else {
 				if(!POST("title")) {
@@ -381,7 +381,7 @@ class Forums_Controller extends ZP_Controller {
 
 					$vars["view"] = $this->view("reply", $this->application, TRUE);
 					
-					$this->template("content", $vars);
+					$this->render("content", $vars);
 				} else {
 					if($action === "save") {
 						$success = $this->Forums_Model->setReply();
@@ -407,7 +407,7 @@ class Forums_Controller extends ZP_Controller {
 					
 					$vars["view"] = $this->view("reply", $this->application, TRUE);
 					
-					$this->template("content", $vars);
+					$this->render("content", $vars);
 				}
 			}
 		} else {
